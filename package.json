@@ -6,6 +6,7 @@
   "author": "Douglas Haubert",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "firebase": "^6.3.3",
     "firebase-admin": "^8.3.0",
@@ -16,6 +17,7 @@
     "nodemon": "^1.19.1"
   },
   "scripts": {
-    "start": "nodemon ./src/index.js"
+    "start:dev": "nodemon ./src/server.js",
+    "start": "node ./src/server.js"
   }
 }
