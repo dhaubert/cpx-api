@@ -1,23 +1,11 @@
-const express = require("express");
-const logger = require("morgan");
-
-class App {
-  constructor() {
-    this.express = express();
-    this.isDev = process.env.NODE_ENV != "production";
-
-    this.middlewares();
-    this.routes();
-  }
-
-  middlewares() {
-    this.express.use(express.urlencoded({ extended: false }));
-    this.express.use(logger('dev'));
-  }
-
-  routes() {
-    this.express.use(require("./routes"));
+if (process.env.NODE_ENV != "production") {
+  require("dotenv").config();
+  if (!process.env.NODE_ENV) {
+    console.log("Please, initialize your environment (.env).");
   }
 }
 
-module.exports = new App().express;
+const app = require("./app");
+const port = process.env.PORT || 3005;
+console.log(`Server listening on port ${port}`);
+app.listen(port);
