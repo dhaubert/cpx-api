@@ -15,6 +15,11 @@ class UserController {
   async transferTo(username, amount) {
 
   }
+
+  async get({ uid }) {
+    return this.model.get({ uid });
+  }
+
 }
 
 module.exports = new UserController();
