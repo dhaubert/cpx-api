@@ -12,7 +12,7 @@ class App {
   }
 
   middlewares() {
-    this.server.use(express.urlencoded({ extended: false }));
+    this.server.use(express.json());
     this.server.use(logger('dev'));
   }
 
