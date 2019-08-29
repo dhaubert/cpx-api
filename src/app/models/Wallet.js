@@ -8,23 +8,25 @@ class Wallet {
     //https://firebase.google.com/docs/database/admin/save-data?authuser=0
   }
 
-  async currentBalance(userHash) {
-    return await this.database.readValue(`users/${userHash}/wallet/balance`);
+  async get(uid) {
+    return await this.database.readValue(`users/${uid}/wallet`);
   }
 
-  async setBalance(userHash, newValue) {
-    return await this.database.setValue(`users/${userHash}/wallet/balance`, newValue);
+  async currentBalance(uid) {
+    return await this.database.readValue(`users/${uid}/wallet/balance`);
   }
 
+  async setBalance(uid, newValue) {
+    return await this.database.setValue(`users/${uid}/wallet/balance`, newValue);
+  }
 
-  async transfer(usernameFrom, usernameTo, transferAmount) {
-    const fromTransaction = await this.database.transaction(`/users/${usernameFrom}/wallet/balance`,
+  async transfer(uidFrom, uidTo, transferAmount) {
+    const fromTransaction = await this.database.transaction(`/users/${uidFrom}/wallet/balance`,
       currentMoneyFrom => {
-        console.log('currentMoneyFrom', currentMoneyFrom);
         const newBalance = currentMoneyFrom - transferAmount;
         const notEnoughFunds = newBalance < 0;
         if (currentMoneyFrom === null) {
-          return -1;
+          return 0;
         } else if (notEnoughFunds) {
           return;
         }
@@ -32,11 +34,11 @@ class Wallet {
       }
     );
 
-    console.log(`Funds from ${usernameFrom} are now: `, fromTransaction.snapshot.val(), "->", fromTransaction.commited)
+    console.log(`Funds from ${uidFrom} are now: `, fromTransaction.snapshot.val(), "->", fromTransaction.commited)
 
     if (fromTransaction.committed && (fromTransaction.snapshot.val() || fromTransaction.snapshot.val() === 0)) {
       const toTransaction = await this.database.transaction(
-        `/users/${usernameTo}/wallet/balance`,
+        `/users/${uidTo}/wallet/balance`,
         currentMoneyTo => {
           if (currentMoneyTo === null) {
             currentMoneyTo = 0;
