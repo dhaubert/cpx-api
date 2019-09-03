@@ -4,12 +4,14 @@ class User {
     this.database = database;
   }
 
-  async add({ full_name, uid, avatar, slack_username, balance }) {
-    return await this.database.setValue(`users/${slack_username}/`, {
-        full_name,
+  async add({ displayName, uid, phoneNumber, photoURL, slackUsername, balance, email }) {
+    return await this.database.setValue(`users/${uid}/`, {
+        displayName,
         uid,
-        avatar,
-        slack_username,
+        photoURL,
+        phoneNumber,
+        email,
+        slackUsername,
         wallet: { balance }
     });
   }

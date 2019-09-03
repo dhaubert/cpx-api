@@ -9,7 +9,6 @@ class UserController {
   }
 
   async add(user) {
-    // @todo bind slack username here
     const newUser = { balance: this.initialBalance, ...user };
     return await this.model.add(newUser);
   }
@@ -35,6 +34,11 @@ class UserController {
       return { message: 'You must set a uid for this user.' };
     }
     return await WalletController.get({ uid: this.uid });
+  }
+
+  async exists({ uid }){
+    const user = await this.get({ uid });
+    return user? true : false;
   }
 
 }

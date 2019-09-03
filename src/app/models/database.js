@@ -33,7 +33,7 @@ class Database {
   async readValue(reference) {
     const ref = this._db.ref(`${reference}`);
     let snapshot = await ref.once("value");
-    return snapshot.val();
+    return snapshot? snapshot.val() : false;
   }
 
   async setAtomicValue(reference, updateFunction) {
@@ -47,7 +47,6 @@ class Database {
 
   async setValue(reference, newValue) {
     return this._db.ref(`${reference}`).set(newValue);
-    return true; // @todo what is returned here?
   }
 
   async updateValue(reference, newValue) {

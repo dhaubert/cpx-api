@@ -3,7 +3,7 @@ const express = require("express");
 const routes = express.Router();
 
 const UserController = require("../src/app/controllers/UserController");
-// const AuthController = require("../src/app/controllers/AuthController");
+const AuthController = require("../src/app/controllers/AuthController");
 
 routes.get("/", (req, res) => {
   res.send("Hello cupinxa.");
@@ -19,18 +19,23 @@ routes.get("/user/", async (req, res) => {
   res.send(users);
 });
 
-// -- Work in progress --
-//routes.get("/signin", async (req, res) => {
-//   const userId = await AuthController.auth();
-//   res.send({ message: `User ${userId} was registered successfully.` }, 201);
-// });
+routes.get("/signin", async (req, res) => {
+  try {
+    if ( await AuthController.signin(req.body) ){
+      res.status(200).send({ message: `User is signed in.` });
+    }
+  } catch (error) {
+    console.log('error', error);
+    res.status(error.statusCode).send(error.message);
+  }
+});
 
 // routes.post("/user", async (req, res) => {
 //   const userId = await UserController.add(req.body);
 //   res.send({ message: `User ${userId} was registered successfully.` }, 201);
 // });
 
-routes.get("/wallet/:uid", async(req, res)  => {
+routes.get("/wallet/:uid", async (req, res) => {
   UserController.uid = req.params.uid;
   const wallet = await UserController.getWallet();
   res.send(wallet);
@@ -39,8 +44,18 @@ routes.get("/wallet/:uid", async(req, res)  => {
 routes.put("/transfer", async (req, res) => {
   const { from, to, amount } = req.body;
   UserController.uid = from;
-  const transactionSucceed = await UserController.transferTo({ uidTo: to, amount })
-  res.status(200).send({ message: `Transaction |${transactionSucceed}| was registered from ${from} to ${to} of ${amount} cpx.` }, 200)
+  const transactionSucceed = await UserController.transferTo({
+    uidTo: to,
+    amount
+  });
+  res
+    .status(200)
+    .send(
+      {
+        message: `Transaction |${transactionSucceed}| was registered from ${from} to ${to} of ${amount} cpx.`
+      },
+      200
+    );
 });
 
 module.exports = routes;
