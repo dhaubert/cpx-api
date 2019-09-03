@@ -30,10 +30,6 @@ routes.get("/signin", async (req, res) => {
   }
 });
 
-// routes.post("/user", async (req, res) => {
-//   const userId = await UserController.add(req.body);
-//   res.send({ message: `User ${userId} was registered successfully.` }, 201);
-// });
 
 routes.get("/wallet/:uid", async (req, res) => {
   UserController.uid = req.params.uid;
