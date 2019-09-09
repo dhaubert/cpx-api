@@ -23,8 +23,8 @@ class Transaction {
 
   }
 
-  async read(username) {
-    this.database.readValue("transactions");
+  async read() {
+    return this.database.readValue("transactions");
   }
 }
 

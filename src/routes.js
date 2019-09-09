@@ -4,6 +4,7 @@ const routes = express.Router();
 
 const UserController = require("../src/app/controllers/UserController");
 const AuthController = require("../src/app/controllers/AuthController");
+const TransactionController = require("../src/app/controllers/TransactionController");
 
 routes.get("/", (req, res) => {
   res.send("Hello cupinxa.");
@@ -35,6 +36,11 @@ routes.get("/wallet/:uid", async (req, res) => {
   UserController.uid = req.params.uid;
   const wallet = await UserController.getWallet();
   res.send(wallet);
+});
+
+routes.get("/transactions", async (req, res) => {
+  const transactions = await TransactionController.getAll();
+  res.send(transactions);
 });
 
 routes.put("/transfer", async (req, res) => {
