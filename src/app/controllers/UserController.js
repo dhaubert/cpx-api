@@ -9,7 +9,8 @@ class UserController {
   }
 
   async add(user) {
-    const newUser = { balance: this.initialBalance, ...user };
+    const slackUsername = user.slackUsername || 'unknown';
+    const newUser = { balance: this.initialBalance, ...user, slackUsername};
     return await this.model.add(newUser);
   }
 
