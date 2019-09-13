@@ -1,12 +1,13 @@
 const express = require("express");
 const logger = require("morgan");
+const cors = require("cors");
 const routes = require("./routes");
 
 class App {
   constructor() {
     this.server = express();
     this.isDev = process.env.NODE_ENV != "production";
-
+    this.server.use(cors());
     this.middlewares();
     this.routes();
   }
