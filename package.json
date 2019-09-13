@@ -6,6 +6,7 @@
   "author": "Douglas Haubert",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "firebase": "^6.3.3",
