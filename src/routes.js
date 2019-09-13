@@ -20,7 +20,7 @@ routes.get("/user/", async (req, res) => {
   res.send(users);
 });
 
-routes.get("/signin", async (req, res) => {
+routes.post("/signin", async (req, res) => {
   try {
     if ( await AuthController.signin(req.body) ){
       res.status(200).send({ message: `User is signed in.` });
@@ -38,7 +38,7 @@ routes.get("/wallet/:uid", async (req, res) => {
   res.send(wallet);
 });
 
-routes.get("/transactions", async (req, res) => {
+routes.get("/transaction", async (req, res) => {
   const transactions = await TransactionController.getAll();
   res.send(transactions);
 });
