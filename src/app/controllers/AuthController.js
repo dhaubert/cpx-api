@@ -8,10 +8,11 @@ class AuthController {
     // checks the information received
 
     if (!this.validateEmail(email)){
-      throw { message: `Email ${email} is not part of irriga.net.`, statusCode: 403 };
+      throw { message: `Email ${email} is not part of irriga.net or sistemairriga.com.br.`, statusCode: 403 };
     }
-
-    if (!this.getUid({ refreshToken })){
+    console.log('refreshToken::', refreshToken);
+    const userPayload = await this.getUid({ refreshToken });
+    if (!userPayload){
       throw { message: `User is not logged in on Google.`, statusCode: 401 };
     }
 
@@ -35,7 +36,7 @@ class AuthController {
   }
 
   validateEmail(email) {
-    return /@irriga.net\s*$/.test(email);
+    return /@irriga.net\s*$/.test(email) || /@sistemairriga.com.br\s*$/.test(email);
   }
 
   auth({ refreshToken }) {
@@ -43,6 +44,7 @@ class AuthController {
   }
 
   getUid({ refreshToken }) {
+    // @todo: check https://firebase.google.com/docs/auth/admin/verify-id-tokens
     firebase
       .auth()
       .verifyIdToken(refreshToken)
