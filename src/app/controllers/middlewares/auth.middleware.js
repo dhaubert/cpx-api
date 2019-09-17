@@ -1,4 +1,5 @@
 const firebase = require("firebase-admin");
+const UserController = require('../../controllers/UserController');
 
 class AuthMiddleware {
   constructor() {
@@ -56,6 +57,9 @@ class AuthMiddleware {
         .auth()
         .verifyIdToken(token);
       req.uid = user.uid;
+      console.log('-user', user);
+      // req.user = { display_name : user.uid } 
+      req.firebaseUser = user;
       next();
     } catch (error) {
       return res.status(500).json({ error });
@@ -63,7 +67,12 @@ class AuthMiddleware {
   }
 
   async fillRegisteredUser(req, res, next) {
-    req.user = { display_name : 'douglas' };
+    // req.user = { displayName : 'douglas' };
+    UserController.uid = req.uid;
+    const localUser = await UserController.get();
+    console.log('localUser', localUser);
+    req.user = localUser;
+    console.log('userInfo', req.user, req.user.displayName)
     next();
     // busca usuario na base local
     //se nao encontrar, exibe que nao foi cadastrado e precisa de signin

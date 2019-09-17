@@ -4,22 +4,33 @@ const User = require("./UserController");
 class AuthController {
   constructor() {}
 
-  async signin({ uid, email, displayName, providerId, phoneNumber, photoURL, slackUsername, refreshToken }) {
+  async signin({ uid, email, displayName, providerId, phoneNumber, photoURL, slackUsername, access_token }) {
     // checks the information received
 
     if (!this.validateEmail(email)){
       throw { message: `Email ${email} is not part of irriga.net or sistemairriga.com.br.`, statusCode: 403 };
     }
-    console.log('refreshToken::', refreshToken);
-    const userPayload = await this.getUid({ refreshToken });
+    console.log('refreshToken::', access_token);
+    const userPayload = await this.getUid({ access_token });
     if (!userPayload){
       throw { message: `User is not logged in on Google.`, statusCode: 401 };
     }
 
     // if the user doesn't exist, create a new one
+    User.uid = uid;
     const alreadyExists = await User.exists({ uid });
 
     if (!alreadyExists) {
+      console.log("Registering new user: ", {
+        uid,
+        email,
+        displayName,
+        providerId,
+        phoneNumber,
+        photoURL,
+        // if slack username is not informed, searches for his username by email
+        slackUsername
+      })
       return User.add({
         uid,
         email,
@@ -31,7 +42,8 @@ class AuthController {
         slackUsername
       });
     }
-
+    
+    console.log('User already exists', User.get());
     return await User.get({ uid });
   }
 

@@ -12,7 +12,7 @@ routes.get(
   AuthMiddleware.decodeFirebaseToken,
   AuthMiddleware.fillRegisteredUser,
   (req, res) => {
-  const username = req.display_name || 'cupinxa';
+    const username = req.user ? req.user.displayName : 'cupinxa';
   res.send(`Hello ${username}.`);
 });
 
@@ -55,21 +55,24 @@ routes.get("/transaction", async (req, res) => {
   res.send(transactions);
 });
 
-routes.put("/transfer", async (req, res) => {
-  const { from, to, amount } = req.body;
-  UserController.uid = from;
-  const transactionSucceed = await UserController.transferTo({
-    uidTo: to,
-    amount
+routes.put("/transfer", 
+  AuthMiddleware.decodeFirebaseToken,
+  AuthMiddleware.fillRegisteredUser,
+  async (req, res) => {
+    const { to, amount } = req.body;
+    UserController.uid = req.uid;
+    const transactionSucceed = await UserController.transferTo({
+      uidTo: to,
+      amount
+    });
+    res
+      .status(200)
+      .send(
+        {
+          message: `Transaction |${transactionSucceed}| was registered from ${req.user.displayName} to ${to} of ${amount} cpx.`
+        },
+        200
+      );
   });
-  res
-    .status(200)
-    .send(
-      {
-        message: `Transaction |${transactionSucceed}| was registered from ${from} to ${to} of ${amount} cpx.`
-      },
-      200
-    );
-});
 
 module.exports = routes;

@@ -18,7 +18,6 @@ class User {
 
   async get({ uid }) {
     const userRef = uid? `/users/${uid}` : `/users/`;
-    console.log('userRef:' , userRef);
     return await this.database.readValue(userRef);
   }
 }

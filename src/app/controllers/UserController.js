@@ -19,8 +19,17 @@ class UserController {
    * @param {object} [optional] { uid } User Identifier
    * @returns {object}
    */
-  async get({ uid }) {
+  async find({ uid }) {
     return this.model.get({ uid });
+  }
+  
+  /**
+   * Get one or all users
+   * @param {object} [optional] { uid } User Identifier
+   * @returns {object}
+   */
+  async get() {
+    return this.find(this);
   }
 
   async transferTo({ uidTo, amount }) {
