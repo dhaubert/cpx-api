@@ -43,6 +43,8 @@ class AuthController {
     return this.getUid({ refreshToken });
   }
 
+
+
   getUid({ refreshToken }) {
     // @todo: check https://firebase.google.com/docs/auth/admin/verify-id-tokens
     firebase
@@ -61,12 +63,11 @@ class AuthController {
       return true;
   }
 
-  createUser() {
-    const uid = "douglas-121112f12f";
+  createUser(user) {
     const additionalClams = {
       isAdmin: true
     };
-
+    // await firebase.auth().setCustomUserClaims(user.uid, tokenClaims);
     // {
     //   "rules":
     //     "premiumContent": {
@@ -74,15 +75,7 @@ class AuthController {
     //     }
     // }
 
-    firebase
-      .auth()
-      .createCustomToken(uid, additionalClams)
-      .then(customToken => {
-        console.log("customToken", customToken);
-      })
-      .catch(error => {
-        console.log("error:", error);
-      });
+    return firebase.auth().setCustomUserClaims(user.uid, additionalClams);
   }
 }
 

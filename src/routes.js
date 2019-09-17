@@ -5,9 +5,15 @@ const routes = express.Router();
 const UserController = require("../src/app/controllers/UserController");
 const AuthController = require("../src/app/controllers/AuthController");
 const TransactionController = require("../src/app/controllers/TransactionController");
+const AuthMiddleware = require("../src/app/controllers/middlewares/auth.middleware");
 
-routes.get("/", (req, res) => {
-  res.send("Hello cupinxa.");
+routes.get(
+  "/",
+  AuthMiddleware.decodeFirebaseToken,
+  AuthMiddleware.fillRegisteredUser,
+  (req, res) => {
+  const username = req.display_name || 'cupinxa';
+  res.send(`Hello ${username}.`);
 });
 
 routes.get("/user/:uid", async (req, res) => {
@@ -34,6 +40,12 @@ routes.post("/signin", async (req, res) => {
 
 routes.get("/wallet/:uid", async (req, res) => {
   UserController.uid = req.params.uid;
+  const wallet = await UserController.getWallet();
+  res.send(wallet);
+});
+
+routes.get("/wallet/", AuthMiddleware.decodeFirebaseToken, async (req, res) => {
+  UserController.uid = req.uid;
   const wallet = await UserController.getWallet();
   res.send(wallet);
 });
