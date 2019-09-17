@@ -1,6 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
+const bearerToken = require("express-bearer-token");
 const routes = require("./routes");
 
 class App {
@@ -13,6 +14,7 @@ class App {
   }
 
   middlewares() {
+    this.server.use(bearerToken());
     this.server.use(express.json());
     this.server.use(logger('dev'));
   }
