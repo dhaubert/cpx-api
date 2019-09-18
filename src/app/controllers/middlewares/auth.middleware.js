@@ -1,30 +1,8 @@
-const firebase = require("firebase-admin");
+const firebase = require('../../utils/firebase');
 const UserController = require('../../controllers/UserController');
 
 class AuthMiddleware {
   constructor() {
-    try {
-      this._initialized = false;
-      this.serviceAccount = {
-        type: "service_account",
-        project_id: process.env.GOOGLE_PROJECT_ID,
-        private_key_id: process.env.GOOGLE_PVT_KEY,
-        private_key: process.env.GOOGLE_PVT_KEY,
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        auth_uri: process.env.GOOGLE_AUTH_URI,
-        token_uri: process.env.GOOGLE_TOKEN_URI,
-        auth_provider_x509_cert_url: process.env.GOOGLE_AUTH_PROVIDER_URL,
-        client_x509_cert_url: process.env.GOOGLE_CLIENT_CERT_URL
-      };
-
-      this.url = process.env.FIREBASE_URL;
-      this._init();
-    } catch (err) {
-      console.log(
-        `Please, provide GOOGLE_APPLICATION_CREDENTIALS as an enviroment variable (${err})`
-      );
-    }
   }
 
   _init() {
@@ -47,7 +25,7 @@ class AuthMiddleware {
     if (!token) {
       res.status(400).json({
         error: {
-          message: `Specify a refreshToken header to be authenticated`
+          message: `Specify a Bearer toekn in order to be authenticated`
         }
       });
     }
@@ -57,8 +35,6 @@ class AuthMiddleware {
         .auth()
         .verifyIdToken(token);
       req.uid = user.uid;
-      console.log('-user', user);
-      // req.user = { display_name : user.uid } 
       req.firebaseUser = user;
       next();
     } catch (error) {
@@ -66,13 +42,11 @@ class AuthMiddleware {
     }
   }
 
-  async fillRegisteredUser(req, res, next) {
+  async fillStoredUser(req, res, next) {
     // req.user = { displayName : 'douglas' };
     UserController.uid = req.uid;
     const localUser = await UserController.get();
-    console.log('localUser', localUser);
     req.user = localUser;
-    console.log('userInfo', req.user, req.user.displayName)
     next();
     // busca usuario na base local
     //se nao encontrar, exibe que nao foi cadastrado e precisa de signin
