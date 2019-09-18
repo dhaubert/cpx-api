@@ -34,7 +34,7 @@ class Wallet {
       }
     );
 
-    console.log(`Funds from ${uidFrom} are now: `, fromTransaction.snapshot.val(), "->", fromTransaction.commited)
+    console.log(`Funds from ${uidFrom} are now: `, fromTransaction.snapshot.val())
 
     if (fromTransaction.committed && (fromTransaction.snapshot.val() || fromTransaction.snapshot.val() === 0)) {
       const toTransaction = await this.database.transaction(
