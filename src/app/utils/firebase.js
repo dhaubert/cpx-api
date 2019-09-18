@@ -7,7 +7,7 @@ class FirebaseProvider {
       this.serviceAccount = {
         type: "service_account",
         project_id: process.env.GOOGLE_PROJECT_ID,
-        private_key_id: process.env.GOOGLE_PVT_KEY.replace(/\\n/g, '\n'),
+        private_key_id: process.env.GOOGLE_PVT_KEY_ID.replace(/\\n/g, '\n'),
         private_key: process.env.GOOGLE_PVT_KEY,
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_CLIENT_ID,
