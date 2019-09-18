@@ -9,8 +9,8 @@ class UserController {
   }
 
   async add(user) {
-    const slackUsername = user.slackUsername || 'unknown';
-    const newUser = { balance: this.initialBalance, ...user, slackUsername};
+    const slackUsername = user.slackUsername || "unknown";
+    const newUser = { balance: this.initialBalance, ...user, slackUsername };
     return await this.model.add(newUser);
   }
 
@@ -22,9 +22,9 @@ class UserController {
   async find({ uid }) {
     return this.model.get({ uid });
   }
-  
+
   /**
-   * Get one or all users
+   * Get information of the current user
    * @param {object} [optional] { uid } User Identifier
    * @returns {object}
    */
@@ -34,23 +34,46 @@ class UserController {
 
   async transferTo({ uidTo, amount }) {
     if (!this.uid) {
-      return { message: 'You must set a uid for this user.', error: 404 };
+      throw { message: "You must set a uid for this user.", statusCode: 404 };
     }
-    return await WalletController.transfer({ uidFrom: this.uid, uidTo, amount });
-  }
+    const receiverExists = await this.exists({ uid: uidTo });
+    console.log("Receiver exists?", receiverExists);
 
+    if (!receiverExists) {
+      throw {
+        message: "The receiving account was not found.",
+        statusCode: 404
+      };
+    }
+
+    const transferSucceed = await WalletController.transfer({
+      uidFrom: this.uid,
+      uidTo,
+      amount
+    });
+    if (!transferSucceed) {
+      throw { message: "Not enough funds.", statusCode: 402 };
+    }
+    return transferSucceed;
+  }
+  /**
+   * Get user's wallet
+   */
   async getWallet() {
     if (!this.uid) {
-      return { message: 'You must set a uid for this user.' };
+      return { message: "You must set a uid for this user.", statusCode: 404 };
     }
     return await WalletController.get({ uid: this.uid });
   }
 
-  async exists({ uid }){
-    const user = await this.get({ uid });
-    return user? true : false;
+  /**
+   * Checks wether a user exists
+   * @param {Object} uid Identifier of the user
+   */
+  async exists({ uid }) {
+    const user = await this.find({ uid });
+    return user ? true : false;
   }
-
 }
 
 module.exports = new UserController();
