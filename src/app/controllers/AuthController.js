@@ -1,4 +1,4 @@
-const firebase = require("firebase-admin");
+const firebase = require("../utils/firebase");
 const User = require("./UserController");
 
 class AuthController {
@@ -21,16 +21,6 @@ class AuthController {
     const alreadyExists = await User.exists({ uid });
 
     if (!alreadyExists) {
-      console.log("Registering new user: ", {
-        uid,
-        email,
-        displayName,
-        providerId,
-        phoneNumber,
-        photoURL,
-        // if slack username is not informed, searches for his username by email
-        slackUsername
-      })
       return User.add({
         uid,
         email,
@@ -42,7 +32,7 @@ class AuthController {
         slackUsername
       });
     }
-    
+
     console.log('User already exists', User.get());
     return await User.get({ uid });
   }
@@ -51,17 +41,17 @@ class AuthController {
     return /@irriga.net\s*$/.test(email) || /@sistemairriga.com.br\s*$/.test(email);
   }
 
-  auth({ refreshToken }) {
-    return this.getUid({ refreshToken });
+  auth({ access_token }) {
+    return this.getUid({ access_token });
   }
 
 
 
-  getUid({ refreshToken }) {
+  getUid({ access_token }) {
     // @todo: check https://firebase.google.com/docs/auth/admin/verify-id-tokens
     firebase
       .auth()
-      .verifyIdToken(refreshToken)
+      .verifyIdToken(access_token)
       .then(function(decodedToken) {
         console.log("decodedToken", decodedToken);
         let uid = decodedToken.uid;
