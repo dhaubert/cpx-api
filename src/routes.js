@@ -20,40 +20,43 @@ routes.get(
 
 routes.get("/user/:uid", async (req, res) => {
   const user = await UserController.find(req.params);
-  res.send(user);
+  res.json(user);
 });
 
 routes.get("/user/", async (req, res) => {
   const users = await UserController.find(req.body);
-  res.send(users);
+  res.json(users);
 });
 
 routes.post("/signin", async (req, res) => {
   try {
     if (await AuthController.signin(req.body)) {
-      res.status(200).send({ message: `User is signed in.` });
+      res.status(200).json({ message: `User is signed in.` });
     }
   } catch (error) {
     console.log("error", error);
-    res.status(error.statusCode).send(error.message);
+    res.status(error.statusCode).json(error.message);
   }
 });
 
 routes.get("/wallet/:uid", async (req, res) => {
   UserController.uid = req.params.uid;
   const wallet = await UserController.getWallet();
-  res.send(wallet);
+  res.json(wallet);
 });
 
-routes.get("/wallet/", AuthMiddleware.decodeFirebaseToken, async (req, res) => {
-  UserController.uid = req.uid;
-  const wallet = await UserController.getWallet();
-  res.send(wallet);
+routes.get("/wallet",
+  AuthMiddleware.decodeFirebaseToken,
+  AuthMiddleware.fillStoredUser,
+  async (req, res) => {
+    UserController.uid = req.uid;
+    const wallet = await UserController.getWallet();
+    res.json(wallet);
 });
 
 routes.get("/transaction", async (req, res) => {
   const transactions = await TransactionController.getAll();
-  res.send(transactions);
+  res.json(transactions);
 });
 
 /**
