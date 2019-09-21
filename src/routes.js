@@ -19,12 +19,12 @@ routes.get(
 );
 
 routes.get("/user/:uid", async (req, res) => {
-  const user = await UserController.get(req.params);
+  const user = await UserController.find(req.params);
   res.send(user);
 });
 
 routes.get("/user/", async (req, res) => {
-  const users = await UserController.get(req.body);
+  const users = await UserController.find(req.body);
   res.send(users);
 });
 
@@ -75,7 +75,7 @@ routes.put(
 
       if (transactionSucceed) {
         res.status(200).send({
-          message: `Transaction  was registered from ${req.user.displayName} to ${to} of ${amount} cpx.`
+          message: `Transaction was registered from ${req.user.displayName} to ${to} of ${amount} cpx.`
         });
       }
     } catch (error) {
