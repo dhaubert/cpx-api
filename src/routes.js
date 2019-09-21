@@ -13,8 +13,8 @@ routes.get(
   AuthMiddleware.fillStoredUser,
   (req, res) => {
     const username = req.user ? req.user.displayName : "cupinxa";
-    // res.send(`Hello ${username}.`);
-    res.json(req.user);
+    res.send(`Hello ${username}.`);
+    // res.json(req.user);
   }
 );
 
