@@ -23,7 +23,7 @@ class Wallet {
   async transfer(uidFrom, uidTo, transferAmount) {
     const fromTransaction = await this.database.transaction(`/users/${uidFrom}/wallet/balance`,
       currentMoneyFrom => {
-        const newBalance = currentMoneyFrom - transferAmount;
+        const newBalance = Number(currentMoneyFrom) - Number(transferAmount);
         const notEnoughFunds = newBalance < 0;
         if (currentMoneyFrom === null) {
           return 0;
@@ -43,7 +43,7 @@ class Wallet {
           if (currentMoneyTo === null) {
             currentMoneyTo = 0;
           }
-          return currentMoneyTo + transferAmount;
+          return Number(currentMoneyTo) + Number(transferAmount);
         }
       );
 
