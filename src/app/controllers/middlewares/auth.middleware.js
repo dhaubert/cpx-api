@@ -47,10 +47,8 @@ class AuthMiddleware {
     UserController.uid = req.uid;
     const localUser = await UserController.get();
     req.user = localUser;
+    console.log('User requesting: ', req.user.displayName);
     next();
-    // busca usuario na base local
-    //se nao encontrar, exibe que nao foi cadastrado e precisa de signin
-    //se encontrar preenche req.user com as informações e vai para o proximo
   }
 
 }

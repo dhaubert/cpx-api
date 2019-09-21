@@ -51,6 +51,7 @@ class UserController {
       uidTo,
       amount
     });
+
     if (!transferSucceed) {
       throw { message: "Not enough funds.", statusCode: 402 };
     }
