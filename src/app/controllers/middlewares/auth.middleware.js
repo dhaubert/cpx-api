@@ -25,7 +25,7 @@ class AuthMiddleware {
     if (!token) {
       res.status(400).json({
         error: {
-          message: `Specify a Bearer toekn in order to be authenticated`
+          message: `Specify a Bearer token in order to be authenticated`
         }
       });
     }
