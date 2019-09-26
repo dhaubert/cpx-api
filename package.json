@@ -21,8 +21,7 @@
   },
   "scripts": {
     "dev": "nodemon ./src/server.js",
-    "build": "node ./src/server.js",
     "start": "node ./src/server.js",
-    "test": "nodemon ./test.js"
+    "test": "echo \"ERROR: no tests implemented yet\" && exit 1"
   }
 }
