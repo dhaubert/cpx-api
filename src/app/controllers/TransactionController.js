@@ -6,8 +6,8 @@ class TransactionController {
     this.model = Transaction;
   }
 
-  async register (fromUsername, toUsername, amount) {
-    return this.model.add(fromUsername, toUsername, amount);
+  async register ({ uidFrom, uidTo, amount }) {
+    return this.model.add(uidFrom, uidTo, amount);
   }
 
   async getAll() {

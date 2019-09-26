@@ -47,7 +47,6 @@ class AuthMiddleware {
     UserController.uid = req.uid;
     const localUser = await UserController.get();
     req.user = localUser;
-    console.log('User requesting: ', req.user.displayName);
     next();
   }
 

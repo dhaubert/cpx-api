@@ -1,5 +1,7 @@
 const Wallet = require('../models/Wallet');
 const TransactionController = require('./TransactionController');
+const slack = require('../utils/slack');
+const UserController = require('../controllers/UserController');
 
 class WalletController {
   constructor() {
@@ -16,9 +18,19 @@ class WalletController {
     const success = await this.model.transfer(uidFrom, uidTo, amount);
     console.log('Transfer succeed? ', success? 'yes': 'no');
     if (success) {
-      TransactionController.register(uidFrom, uidTo, amount);
+      this.notify({ uidFrom, uidTo, amount });
+      TransactionController.register({ uidFrom, uidTo, amount });
     }
     return success;
+  }
+
+  async notify({ uidFrom, uidTo, amount }) {
+    const UserController = require('../controllers/UserController');
+    console.log(`NOtifying ${uidFrom}, to: ${uidTo}, amount: ${amount}`);
+    const fromUser = await UserController.find({ uid: uidFrom });
+    const toUser = await UserController.find({ uid: uidTo });
+    console.log(`Notifying ${fromUser.slackUsernamez}, to: ${toUser.slackUsername}, amount: ${amount}`);
+    return await slack.postOnChannel({ usernameFrom: fromUser.slackUsername , usernameTo: toUser.slackUsername, amount });
   }
 }
 

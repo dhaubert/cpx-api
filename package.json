@@ -6,6 +6,7 @@
   "author": "Douglas Haubert",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",

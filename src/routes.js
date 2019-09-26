@@ -23,7 +23,7 @@ routes.get("/user/:uid", async (req, res) => {
   res.json(user);
 });
 
-routes.get("/user/", async (req, res) => {
+routes.get("/user", async (req, res) => {
   const users = await UserController.find(req.body);
   res.json(users);
 });
@@ -59,9 +59,6 @@ routes.get("/transaction", async (req, res) => {
   res.json(transactions);
 });
 
-/**
- * @todo validate if the user on 'to' exists
- */
 routes.put(
   "/transfer",
   AuthMiddleware.decodeFirebaseToken,
