@@ -36,6 +36,7 @@ class AuthMiddleware {
         .verifyIdToken(token);
       req.uid = user.uid;
       req.firebaseUser = user;
+      console.log(req.firebaseUser);
       next();
     } catch (error) {
       return res.status(500).json({ error });

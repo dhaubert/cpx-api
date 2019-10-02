@@ -4,12 +4,11 @@ class User {
     this.database = database;
   }
 
-  async add({ displayName, uid, phoneNumber, photoURL, slackUsername, balance, email }) {
+  async add({ displayName, uid, photoURL, slackUsername, balance, email }) {
     return await this.database.setValue(`users/${uid}/`, {
         displayName,
         uid,
         photoURL,
-        phoneNumber,
         email,
         slackUsername,
         wallet: { balance }

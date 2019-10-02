@@ -9,6 +9,7 @@ class UserController {
   }
 
   async add(user) {
+    this.uid = user.uid;
     const slackUsername = user.slackUsername || "unknown";
     const newUser = { balance: this.initialBalance, ...user, slackUsername };
     return await this.model.add(newUser);
@@ -72,6 +73,7 @@ class UserController {
    * @param {Object} uid Identifier of the user
    */
   async exists({ uid }) {
+    uid = uid || this.uid;
     const user = await this.find({ uid });
     return user ? true : false;
   }

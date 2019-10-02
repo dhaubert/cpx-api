@@ -35,7 +35,7 @@ routes.post("/signin", async (req, res) => {
     }
   } catch (error) {
     console.log("error", error);
-    res.status(error.statusCode).json(error.message);
+    res.status(error.statusCode || 401).json(error);
   }
 });
 
