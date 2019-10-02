@@ -29,8 +29,8 @@ class WalletController {
     console.log(`NOtifying ${uidFrom}, to: ${uidTo}, amount: ${amount}`);
     const fromUser = await UserController.find({ uid: uidFrom });
     const toUser = await UserController.find({ uid: uidTo });
-    console.log(`Notifying ${fromUser.slackUsernamez}, to: ${toUser.slackUsername}, amount: ${amount}`);
-    return await slack.postOnChannel({ usernameFrom: fromUser.slackUsername , usernameTo: toUser.slackUsername, amount });
+    console.log(`Notifying ${fromUser.slackUsername}, to: ${toUser.slackUsername}, amount: ${amount}`);
+    return await slack.postOnChannel({ from: fromUser.slackUsername, to: toUser.slackUsername, amount });
   }
 }
 

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const WalletController = require("./WalletController");
+
 class UserController {
   constructor() {
     this.wallet = WalletController;
@@ -10,9 +11,15 @@ class UserController {
 
   async add(user) {
     this.uid = user.uid;
-    const slackUsername = user.slackUsername || "unknown";
+    const slackUsername = user.slackUsername || (await this.getSlackUser(user)).id;
     const newUser = { balance: this.initialBalance, ...user, slackUsername };
     return await this.model.add(newUser);
+  }
+
+  async getSlackUser ({ email }) {
+    const slack = require("../utils/slack");
+    const slackUser = await slack.getSlackUserFromEmail({ email });
+    return slackUser || {};
   }
 
   /**
