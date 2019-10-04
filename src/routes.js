@@ -54,6 +54,16 @@ routes.get("/wallet",
     res.json(wallet);
 });
 
+routes.get("/wallet/:uid",
+  AuthMiddleware.decodeFirebaseToken,
+  AuthMiddleware.fillStoredUser,
+  async (req, res) => {
+    const { uid } = req.params;
+    UserController.uid = uid;
+    const wallet = await UserController.getWallet();
+    res.json(wallet);
+});
+
 routes.get("/transaction", async (req, res) => {
   const transactions = await TransactionController.getAll();
   res.json(transactions);
