@@ -5,6 +5,7 @@ class SlackProvider {
     this.slackToken = process.env.SLACK_TOKEN;
     this.slackUrl = process.env.SLACK_URL;
     this.webhookURL = process.env.SLACK_WEBHOOK_URL;
+    this.shouldNotify = process.env.SLACK_NOTIFICATION;
   }
 
   async getUserHash({ email }) {
@@ -12,6 +13,9 @@ class SlackProvider {
     return user.id;
   }
 
+  /**
+   * Get a list of users of a team. Requires slack permission to read user data and email addresses
+   */
   async getUsersFromTeam() {
     const users = await axios.get(
       `${this.slackUrl}/users.list?token=${this.slackToken}`
@@ -25,16 +29,20 @@ class SlackProvider {
     }
     const users = await this.getUsersFromTeam();
     const found = users.find(
-      user => (user.deleted == false && user.profile.email == email)
+      user => user.deleted == false && user.profile.email == email
     );
-    return found? this.formatUser(found): false;
+    return found ? this.formatUser(found) : false;
   }
 
   async postOnChannel({ from, to, amount, message }) {
+    if (this.this.shouldNotify) {
+      return false;
+    }
+
     message = message || "";
 
-    from = this.citationFormat({ id: from });
-    to = this.citationFormat({ id: to });
+    from = this.mentionFormat({ id: from });
+    to = this.mentionFormat({ id: to });
 
     if (!from || !to) {
       return "false";
@@ -47,10 +55,7 @@ class SlackProvider {
     };
     const payload = JSON.stringify(body);
 
-    const response = await axios.post(
-      this.webhookURL,
-      payload
-    );
+    const response = await axios.post(this.webhookURL, payload);
     console.log("Posted on Slack channel #CPX", response.statusText);
     return response.statusText;
   }
@@ -84,7 +89,7 @@ class SlackProvider {
     };
   }
 
-  citationFormat({ id }) {
+  mentionFormat({ id }) {
     return `<@${id}>`;
   }
 }
