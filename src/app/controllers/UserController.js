@@ -40,7 +40,7 @@ class UserController {
     return this.find(this);
   }
 
-  async transferTo({ uidTo, amount }) {
+  async transferTo({ uidTo, amount, message }) {
     if (!this.uid) {
       throw { message: "You must set a uid for this user.", statusCode: 404 };
     }
@@ -49,7 +49,7 @@ class UserController {
 
     if (!receiverExists) {
       throw {
-        message: "The receiving account was not found.",
+        message: "The receiver account was not found.",
         statusCode: 404
       };
     }
@@ -57,7 +57,8 @@ class UserController {
     const transferSucceed = await WalletController.transfer({
       uidFrom: this.uid,
       uidTo,
-      amount
+      amount,
+      message
     });
 
     if (!transferSucceed) {

@@ -35,7 +35,7 @@ class SlackProvider {
   }
 
   async postOnChannel({ from, to, amount, message }) {
-    if (this.this.shouldNotify) {
+    if (!this.shouldNotify) {
       return false;
     }
 
@@ -50,8 +50,10 @@ class SlackProvider {
 
     const date = Math.floor(new Date() / 1000);
 
+    const messageFormat = message ? `${from} says: ${message}.` : "";
+
     const body = {
-      text: `${to} you got ${amount} CPX from ${from} <!date^${date}^at {date_num} {time_secs}| AM>. ${message}`
+      text: `${to} you got ${amount} CPX coins from ${from} <!date^${date}^at {date_num} {time_secs}| AM>. ${messageFormat}`
     };
     const payload = JSON.stringify(body);
 

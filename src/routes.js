@@ -14,7 +14,6 @@ routes.get(
   (req, res) => {
     const username = req.user ? req.user.displayName : "cupinxa";
     res.send(`Hello ${username}.`);
-    // res.json(req.user);
   }
 );
 
@@ -74,13 +73,14 @@ routes.put(
   AuthMiddleware.decodeFirebaseToken,
   AuthMiddleware.fillStoredUser,
   async (req, res) => {
-    const { to, amount } = req.body;
+    const { to, amount, message } = req.body;
     UserController.uid = req.uid;
 
     try {
       const transactionSucceed = await UserController.transferTo({
         uidTo: to,
-        amount
+        amount,
+        message
       });
 
       if (transactionSucceed) {
